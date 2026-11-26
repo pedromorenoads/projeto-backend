@@ -82,7 +82,7 @@ npm run db:migrate
 npm run db:seed
 ```
 
-O seeder cria três categorias e um usuário de demonstração:
+Os seeders criam categorias, um catálogo de produtos de exemplo (com imagens em `public/seed-images`) e um usuário de demonstração:
 
 ```
 email: user@demo.com
@@ -184,6 +184,8 @@ O cadastro de usuário (`POST /v1/user`) e a geração de token (`POST /v1/user/
 | PUT | `/v1/product/:id` | Sim | 204, 400, 401, 404 |
 | DELETE | `/v1/product/:id` | Sim | 204, 401, 404 |
 
+Em `GET /v1/product/:id`, o parâmetro pode ser o ID numérico ou o `slug` do produto (usado nas URLs do front-end).
+
 ## Filtros de busca
 
 ### Categorias — `GET /v1/category/search`
@@ -215,7 +217,7 @@ GET /v1/product/search?match=tênis&category_ids=1,2&price-range=100-300&option[
 | --- | --- |
 | `users` | `id`, `firstname`, `surname`, `email`, `password` (hash bcrypt), `created_at`, `updated_at` |
 | `categories` | `id`, `name`, `slug`, `use_in_menu`, `created_at`, `updated_at` |
-| `products` | `id`, `enabled`, `name`, `slug`, `use_in_menu`, `stock`, `description`, `price`, `price_with_discount`, `created_at`, `updated_at` |
+| `products` | `id`, `enabled`, `name`, `slug`, `use_in_menu`, `stock`, `description`, `price`, `price_with_discount`, `brand`, `gender`, `rating`, `reviews`, `created_at`, `updated_at` |
 | `product_images` | `id`, `product_id`, `enabled`, `path` |
 | `product_options` | `id`, `product_id`, `title`, `shape`, `radius`, `type`, `values` |
 | `products_categories` | `product_id`, `category_id` |

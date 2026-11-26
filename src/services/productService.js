@@ -53,6 +53,10 @@ function serializeProduct(product) {
     description: plain.description,
     price: plain.price,
     price_with_discount: plain.price_with_discount,
+    brand: plain.brand,
+    gender: plain.gender,
+    rating: plain.rating === null || plain.rating === undefined ? 0 : Number(plain.rating),
+    reviews: plain.reviews === null || plain.reviews === undefined ? 0 : Number(plain.reviews),
     category_ids: (plain.categories || []).map((category) => category.id),
     images: (plain.images || []).map((image) => ({
       id: image.id,
@@ -117,6 +121,20 @@ function validateProductFields(data, { partial }) {
     }
   }
 
+  if (data.rating !== undefined) {
+    const rating = Number(data.rating);
+    if (!Number.isFinite(rating) || rating < 0 || rating > 5) {
+      throw new AppError(400, 'A avaliação deve ser um número entre 0 e 5');
+    }
+  }
+
+  if (data.reviews !== undefined) {
+    const reviews = Number(data.reviews);
+    if (!Number.isInteger(reviews) || reviews < 0) {
+      throw new AppError(400, 'O número de avaliações deve ser um inteiro maior ou igual a zero');
+    }
+  }
+
   if (data.category_ids !== undefined && !Array.isArray(data.category_ids)) {
     throw new AppError(400, 'category_ids deve ser uma lista de IDs');
   }
@@ -140,6 +158,10 @@ function buildProductValues(data) {
     description: data.description === undefined || data.description === null ? null : String(data.description),
     price: Number(data.price),
     price_with_discount: Number(data.price_with_discount),
+    brand: data.brand === undefined || data.brand === null ? null : String(data.brand).trim(),
+    gender: data.gender === undefined || data.gender === null ? null : String(data.gender).trim(),
+    rating: data.rating === undefined ? 0 : Number(data.rating),
+    reviews: data.reviews === undefined ? 0 : Number(data.reviews),
   };
 }
 
@@ -407,7 +429,12 @@ async function updateOptions(productId, options, transaction) {
 }
 
 async function getById(id, transaction) {
-  const product = await Product.findByPk(id, {
+  const value = String(id);
+  // O front-end usa o slug nas URLs; aceitamos também o ID numérico.
+  const where = /^\d+$/.test(value) ? { id: Number(value) } : { slug: value };
+
+  const product = await Product.findOne({
+    where,
     include: PRODUCT_INCLUDE,
     transaction,
   });
@@ -626,7 +653,18 @@ async function update(id, data = {}) {
     validateProductFields(data, { partial: true });
 
     const updates = {};
-    const fields = ['name', 'slug', 'stock', 'description', 'price', 'price_with_discount'];
+    const fields = [
+      'name',
+      'slug',
+      'stock',
+      'description',
+      'price',
+      'price_with_discount',
+      'brand',
+      'gender',
+      'rating',
+      'reviews',
+    ];
 
     if (data.enabled !== undefined) updates.enabled = toBoolean(data.enabled);
     if (data.use_in_menu !== undefined) updates.use_in_menu = toBoolean(data.use_in_menu);
@@ -645,6 +683,14 @@ async function update(id, data = {}) {
     if (updates.description !== undefined && updates.description !== null) {
       updates.description = String(updates.description);
     }
+    if (updates.brand !== undefined && updates.brand !== null) {
+      updates.brand = String(updates.brand).trim();
+    }
+    if (updates.gender !== undefined && updates.gender !== null) {
+      updates.gender = String(updates.gender).trim();
+    }
+    if (updates.rating !== undefined) updates.rating = Number(updates.rating);
+    if (updates.reviews !== undefined) updates.reviews = Number(updates.reviews);
 
     if (Object.keys(updates).length) {
       await product.update(updates, { transaction });

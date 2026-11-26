@@ -44,6 +44,24 @@ const Product = sequelize.define(
       type: DataTypes.FLOAT,
       allowNull: false,
     },
+    brand: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    gender: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    rating: {
+      type: DataTypes.FLOAT,
+      allowNull: true,
+      defaultValue: 0,
+    },
+    reviews: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      defaultValue: 0,
+    },
   },
   {
     tableName: 'products',

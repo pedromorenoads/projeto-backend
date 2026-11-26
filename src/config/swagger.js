@@ -315,8 +315,16 @@ module.exports = {
     '/v1/product/{id}': {
       get: {
         tags: ['Produtos'],
-        summary: 'Busca um produto pelo ID',
-        parameters: [idParameter],
+        summary: 'Busca um produto pelo ID numérico ou slug',
+        parameters: [
+          {
+            name: 'id',
+            in: 'path',
+            required: true,
+            description: 'ID numérico ou slug do produto',
+            schema: { type: 'string', example: 'air-jordan-1-retro-high-chicago' },
+          },
+        ],
         responses: {
           200: {
             description: 'Produto encontrado',
@@ -452,6 +460,10 @@ module.exports = {
           description: { type: 'string', example: 'Descrição do produto 01' },
           price: { type: 'number', example: 119.9 },
           price_with_discount: { type: 'number', example: 99.9 },
+          brand: { type: 'string', example: 'Jordan' },
+          gender: { type: 'string', example: 'Masculino' },
+          rating: { type: 'number', example: 4.8 },
+          reviews: { type: 'integer', example: 132 },
           category_ids: { type: 'array', items: { type: 'integer' }, example: [1, 15] },
           images: { type: 'array', items: { $ref: '#/components/schemas/ProductImage' } },
           options: { type: 'array', items: { $ref: '#/components/schemas/ProductOption' } },
@@ -468,6 +480,10 @@ module.exports = {
           description: { type: 'string', example: 'Descrição do produto 01' },
           price: { type: 'number', example: 119.9 },
           price_with_discount: { type: 'number', example: 99.9 },
+          brand: { type: 'string', example: 'Jordan' },
+          gender: { type: 'string', example: 'Masculino' },
+          rating: { type: 'number', example: 4.8 },
+          reviews: { type: 'integer', example: 132 },
           category_ids: { type: 'array', items: { type: 'integer' }, example: [1, 15] },
           images: {
             type: 'array',

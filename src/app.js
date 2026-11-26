@@ -16,6 +16,7 @@ app.use(cors());
 // Limite maior para aceitar imagens enviadas em base64.
 app.use(express.json({ limit: '15mb' }));
 app.use('/uploads', express.static(path.join(__dirname, '..', 'public', 'uploads')));
+app.use('/seed-images', express.static(path.join(__dirname, '..', 'public', 'seed-images')));
 
 app.get('/', (req, res) => {
   res.status(200).json({
